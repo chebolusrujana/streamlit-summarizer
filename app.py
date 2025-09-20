@@ -40,7 +40,7 @@ def summarize_text(text, max_len=200, min_len=50):
 st.set_page_config(page_title="AI Document Summarizer", page_icon="📄", layout="wide")
 
 # -------------------- Add Background Image --------------------
-background_image_url = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f"  # You can replace with any link
+background_image_url = "https://lh3.googleusercontent.com/gg-dl/AJfQ9KRpv8UGyeTSPPz6L4nlyYmIDAPsrwv6SJUEtaUpF3En2mA8hwZZDT2mAuP8oNJrqQ3iHYrzzNJ2nboiRA-xTm8CyjMLTiEwVnWEdV8QkGXUrI1gD33RXmDwppj4ciF3L_9ZE6ERljvtqg7OwnAZvriyah6JbgKoYEjGrpdD6pID5-YdNw=s1024"  # You can replace with any link
 
 page_bg = f"""
 <style>
