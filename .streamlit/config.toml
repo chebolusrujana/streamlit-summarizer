@@ -1,0 +1,1 @@
+'[server]\nheadless = true\n[python]\nversion = "3.10"' 

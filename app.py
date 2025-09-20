@@ -1,15 +1,52 @@
 import streamlit as st
 from transformers import pipeline, AutoTokenizer
 from rouge_score import rouge_scorer
-import base64
-import os
-import docx
-import PyPDF2
+import base64, os, docx, PyPDF2
+import torch
 
-# -------------------- Load Model --------------------
-model_name = "facebook/bart-large-cnn"
-summarizer = pipeline("summarization", model=model_name)
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+# -------------------- Load Model Once --------------------
+@st.cache_resource
+def load_summarizer():
+    model_name = "facebook/bart-large-cnn"
+    device = 0 if torch.cuda.is_available() else -1
+    summarizer = pipeline("summarization", model=model_name, device=device)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    return summarizer, tokenizer
+
+summarizer, tokenizer = load_summarizer()
+
+# -------------------- Background Image --------------------
+def set_background():
+    local_path = "assets/background.png"
+    fallback_url = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f"
+
+    if os.path.exists(local_path):
+        with open(local_path, "rb") as f:
+            data = f.read()
+        bin_str = base64.b64encode(data).decode()
+        background = f"url('data:image/png;base64,{bin_str}')"
+    else:
+        background = f"url('{fallback_url}')"
+
+    page_bg = f"""
+    <style>
+    .stApp {{
+        background-image: {background};
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    .block-container {{
+        background: rgba(255, 255, 255, 0.85);
+        padding: 20px;
+        border-radius: 12px;
+    }}
+    </style>
+    """
+    st.markdown(page_bg, unsafe_allow_html=True)
+
+set_background()
 
 # -------------------- Helper Functions --------------------
 def summarize_text(text, max_len=200, min_len=50):
@@ -60,7 +97,9 @@ def read_file(uploaded_file):
         elif uploaded_file.type == "application/pdf":
             pdf_reader = PyPDF2.PdfReader(uploaded_file)
             for page in pdf_reader.pages:
-                text += page.extract_text() + "\n"
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
 
         elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
             doc = docx.Document(uploaded_file)
@@ -70,30 +109,6 @@ def read_file(uploaded_file):
 
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="AI Document Summarizer", page_icon="📄", layout="wide")
-
-# -------------------- Optional Background --------------------
-bg_path = "assets/background.png"
-if os.path.exists(bg_path):
-    with open(bg_path, "rb") as f:
-        data = f.read()
-    bin_str = base64.b64encode(data).decode()
-    page_bg = f"""
-    <style>
-    .stApp {{
-        background-image: url("data:image/png;base64,{bin_str}");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }}
-    .block-container {{
-        background: rgba(255, 255, 255, 0.85);
-        padding: 20px;
-        border-radius: 12px;
-    }}
-    </style>
-    """
-    st.markdown(page_bg, unsafe_allow_html=True)
 
 # -------------------- Sidebar --------------------
 with st.sidebar:

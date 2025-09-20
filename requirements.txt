@@ -1,12 +1,7 @@
 streamlit
-transformers
-torch
-nltk
-scikit-learn
-wordcloud
-python-docx
-PyPDF2
-sentencepiece
+transformers==4.44.2
+torch==2.2.2
 rouge-score
 python-docx
 PyPDF2
+
