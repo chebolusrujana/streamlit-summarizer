@@ -3,3 +3,5 @@ transformers==4.44.2
 torch==2.5.1
 rouge-score==0.1.2
 nltk==3.9.1
+python-docx
+PyPDF2==3.0.1
