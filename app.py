@@ -3,6 +3,10 @@ from transformers import pipeline, AutoTokenizer
 from rouge_score import rouge_scorer
 import base64, os, docx, PyPDF2
 import torch
+import os, warnings
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 
 # -------------------- Load Model Once --------------------
 @st.cache_resource
@@ -49,7 +53,7 @@ def set_background():
 set_background()
 
 # -------------------- Helper Functions --------------------
-def summarize_text(text, max_len=200, min_len=50):
+def summarize_text(text, max_len=400, min_len=100):  # default longer summary
     tokens = tokenizer.encode(text, truncation=True, max_length=1024)
     truncated_text = tokenizer.decode(tokens, skip_special_tokens=True)
 
@@ -113,15 +117,16 @@ st.set_page_config(page_title="AI Document Summarizer", page_icon="📄", layout
 # -------------------- Sidebar --------------------
 with st.sidebar:
     st.title("⚙️ Settings")
-    max_len = st.slider("Max Summary Length", 50, 500, 200)
-    min_len = st.slider("Min Summary Length", 10, 100, 50)
+    # Higher sliders for longer summaries
+    max_len = st.slider("Max Summary Length", 100, 800, 400)
+    min_len = st.slider("Min Summary Length", 50, 200, 100)
     st.markdown("---")
     st.info("Upload a TXT, PDF, or DOCX file!")
 
 # -------------------- Header --------------------
 st.markdown(
     "<h1 style='text-align: center; color: #2F4F4F;'>📄 AI Document Summarization Tool</h1>"
-    "<p style='text-align: center; color: gray;'>Summarize long documents into concise, clear summaries.</p>",
+    "<p style='text-align: center; color: gray;'>Summarize long documents into detailed, clear summaries.</p>",
     unsafe_allow_html=True
 )
 

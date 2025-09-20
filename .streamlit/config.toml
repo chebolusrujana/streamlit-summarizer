@@ -1,1 +1,3 @@
-'[server]\nheadless = true\n[python]\nversion = "3.10"' 
+[server]
+enableCORS = true
+enableXsrfProtection = true
