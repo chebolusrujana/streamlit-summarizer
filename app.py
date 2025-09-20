@@ -1,5 +1,6 @@
 import streamlit as st
 from transformers import pipeline, AutoTokenizer
+import base64
 
 # -------------------- Load Model --------------------
 model_name = "facebook/bart-large-cnn"
@@ -39,13 +40,19 @@ def summarize_text(text, max_len=200, min_len=50):
 # -------------------- Page Config --------------------
 st.set_page_config(page_title="AI Document Summarizer", page_icon="📄", layout="wide")
 
-# -------------------- Add Background Image --------------------
-background_image_url = "https://lh3.googleusercontent.com/gg-dl/AJfQ9KRpv8UGyeTSPPz6L4nlyYmIDAPsrwv6SJUEtaUpF3En2mA8hwZZDT2mAuP8oNJrqQ3iHYrzzNJ2nboiRA-xTm8CyjMLTiEwVnWEdV8QkGXUrI1gD33RXmDwppj4ciF3L_9ZE6ERljvtqg7OwnAZvriyah6JbgKoYEjGrpdD6pID5-YdNw=s1024"
+# -------------------- Add Local Background Image --------------------
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+# Use local image (make sure background.png is in same folder as app.py)
+bin_str = get_base64_of_bin_file("background.png")
 
 page_bg = f"""
 <style>
 [data-testid="stAppViewContainer"] {{
-    background-image: url("{background_image_url}");
+    background-image: url("data:image/png;base64,{bin_str}");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
