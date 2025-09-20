@@ -1,7 +1,10 @@
-streamlit
+
 transformers==4.44.2
-torch==2.2.2
 rouge-score
 python-docx
 PyPDF2
+streamlit==1.49.1
+transformers==4.44.2
+torch==2.5.1
+
 
