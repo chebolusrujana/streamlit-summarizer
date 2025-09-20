@@ -1,0 +1,12 @@
+streamlit
+transformers
+torch
+nltk
+scikit-learn
+wordcloud
+python-docx
+PyPDF2
+streamlit
+transformers
+torch
+sentencepiece
